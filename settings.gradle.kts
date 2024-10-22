@@ -23,3 +23,4 @@ rootProject.name = "CRFPOS2024"
 include(":app")
 
 include(":feature:feature-goods")
+include(":core:model")

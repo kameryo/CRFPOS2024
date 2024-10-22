@@ -31,7 +31,7 @@ fun MainScreen(
             Text(stringResource(R.string.records_manage))
         }
         Button(onClick = toGoodsScreen) {
-            Text(stringResource(R.string.goods_manege))
+            Text(stringResource(R.string.goods_manage))
         }
     }
 

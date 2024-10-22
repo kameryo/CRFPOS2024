@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="goods_manage">商品管理</string>
+    <string name="goods_name">商品名</string>
+    <string name="goods_price">価格</string>
+</resources>
