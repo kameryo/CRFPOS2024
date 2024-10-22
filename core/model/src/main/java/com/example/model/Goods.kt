@@ -7,6 +7,7 @@ data class Goods(
     val purchases: Int,
     val remain: Int,
     val isAvailable: Boolean,
+    val displayOrder: Long,
 )
 
 
