@@ -3,4 +3,6 @@
     <string name="goods_manage">商品管理</string>
     <string name="goods_name">商品名</string>
     <string name="goods_price">価格</string>
+    <string name="goods_add">商品の追加</string>
+    <string name="title_empty">Please input goods\' name and price</string>
 </resources>

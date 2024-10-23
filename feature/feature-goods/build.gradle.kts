@@ -53,6 +53,9 @@ dependencies {
     implementation(libs.androidx.material3)
 
     implementation(libs.hilt.android)
+    implementation(project(":core:data"))
+    implementation(project(":core:model"))
+
     ksp(libs.hilt.compiler)
     ksp(libs.hilt.android.compiler)
 

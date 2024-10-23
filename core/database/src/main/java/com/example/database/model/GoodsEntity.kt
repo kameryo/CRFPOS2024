@@ -10,9 +10,9 @@ data class GoodsEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
     val name: String,
-    val price: Int,
-    val purchases: Int,
-    val remain: Int,
+    val price: Long,
+    val purchases: Long,
+    val remain: Long,
     val isAvailable: Boolean,
     val displayOrder: Long,
 )
