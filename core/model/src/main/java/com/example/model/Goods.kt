@@ -9,6 +9,3 @@ data class Goods(
     val isAvailable: Boolean,
     val displayOrder: Long,
 )
-
-
-

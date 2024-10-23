@@ -24,3 +24,5 @@ include(":app")
 
 include(":feature:feature-goods")
 include(":core:model")
+include(":core:database")
+include(":core:data")
