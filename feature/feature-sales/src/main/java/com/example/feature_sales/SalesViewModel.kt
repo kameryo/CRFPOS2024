@@ -76,7 +76,17 @@ class SalesViewModel @Inject constructor(
             adultNum = _salesScreenState.value.adultCount,
             childNum = _salesScreenState.value.childCount
         )
+        val normalTicketCount = calculator.calNormalTicketCount(
+            adultNum = _salesScreenState.value.adultCount,
+            childNum = _salesScreenState.value.childCount
+        )
+        val accompanyTicketCount = calculator.calAccompanyTicketCount(
+            adultNum = _salesScreenState.value.adultCount,
+            childNum = _salesScreenState.value.childCount
+        )
         _salesScreenState.value = _salesScreenState.value.copy(subFare = fare)
+        _salesScreenState.value = _salesScreenState.value.copy(normalTicketCount = normalTicketCount)
+        _salesScreenState.value = _salesScreenState.value.copy(accompanyTicketCount = accompanyTicketCount)
     }
 
 }
