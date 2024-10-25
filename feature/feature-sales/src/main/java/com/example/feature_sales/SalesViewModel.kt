@@ -12,8 +12,6 @@ import javax.inject.Inject
 data class SalesScreenState(
     val adultCount: Int = 0,
     val childCount: Int = 0,
-    val adultManualCountText: String = "",
-    val childManualCountText: String = "",
 //    val selectedGoods: List<CartItem> = emptyList(),
     val subFare: Int = 0,
     val subGoods: Int = 0,
@@ -34,11 +32,10 @@ class SalesViewModel @Inject constructor(
         data object Resetting : UiState
         data object ResetSuccess : UiState
         data object ResetError : UiState
-        data class UpdatingScreen(val state: SalesScreenState) : UiState
+//        data class UpdatingScreen(val state: SalesScreenState) : UiState
 
         data object Idle : UiState
-
-        data object UpdateInProgress : UiState
+        
         data object UpdateSuccess : UiState
 
     }
@@ -48,7 +45,7 @@ class SalesViewModel @Inject constructor(
     private val _salesScreenState = MutableStateFlow<SalesScreenState>(
         SalesScreenState()
     )
-    private val salesScreenState: StateFlow<SalesScreenState> = _salesScreenState.asStateFlow()
+    val salesScreenState: StateFlow<SalesScreenState> = _salesScreenState.asStateFlow()
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Initial)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -62,21 +59,24 @@ class SalesViewModel @Inject constructor(
         _uiState.value = UiState.Resetting
         _salesScreenState.value = SalesScreenState()
         _uiState.value = UiState.ResetSuccess
-        _uiState.value = UiState.UpdatingScreen(state = _salesScreenState.value)
     }
 
     fun updateAdultCount(adultCount: Int) {
-        _uiState.value = UiState.UpdateInProgress
         _salesScreenState.value = _salesScreenState.value.copy(adultCount = adultCount)
-        _uiState.value = UiState.UpdateSuccess
-        _uiState.value = UiState.UpdatingScreen(state = _salesScreenState.value)
+        calculate()
     }
 
     fun updateChildCount(childCount: Int) {
-        _uiState.value = UiState.UpdateInProgress
         _salesScreenState.value = _salesScreenState.value.copy(childCount = childCount)
-        _uiState.value = UiState.UpdateSuccess
-        _uiState.value = UiState.UpdatingScreen(state = _salesScreenState.value)
+        calculate()
+    }
+
+    private fun calculate() {
+        val fare = calculator.calFare(
+            adultNum = _salesScreenState.value.adultCount,
+            childNum = _salesScreenState.value.childCount
+        )
+        _salesScreenState.value = _salesScreenState.value.copy(subFare = fare)
     }
 
 }

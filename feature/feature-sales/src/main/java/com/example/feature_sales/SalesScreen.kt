@@ -35,7 +35,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -63,6 +62,7 @@ fun SalesScreen(
     back: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val salesScreenState by viewModel.salesScreenState.collectAsState()
 
     SalesScreen(
         uiState = uiState,
@@ -79,6 +79,7 @@ fun SalesScreen(
         onChangeChildCount = { childCount ->
             viewModel.updateChildCount(childCount)
         },
+        salesScreenState = salesScreenState,
     )
 
 }
@@ -92,9 +93,8 @@ private fun SalesScreen(
     moveToIdle: () -> Unit,
     onChangeAdultCount: (Int) -> Unit,
     onChangeChildCount: (Int) -> Unit,
+    salesScreenState: SalesScreenState,
 ) {
-    var adultCount by rememberSaveable { mutableIntStateOf(0) }
-    var childCount by rememberSaveable { mutableIntStateOf(0) }
 
     var adultManualCountText by rememberSaveable { mutableStateOf("") }
     var childManualCountText by rememberSaveable { mutableStateOf("") }
@@ -122,8 +122,8 @@ private fun SalesScreen(
 
         SalesScreenContent(
             modifier = Modifier.padding(paddingValues),
-            adultCount = adultCount,
-            childCount = childCount,
+            adultCount = salesScreenState.adultCount,
+            childCount = salesScreenState.childCount,
             adultManualCountText = adultManualCountText,
             childManualCountText = childManualCountText,
             onChangeAdultCount = {
@@ -138,13 +138,13 @@ private fun SalesScreen(
             onChangeChildManualCountText = {
                 childManualCountText = it
             },
-            subFare = adultCount,
-            subGoods = adultCount,
-            total = adultCount,
+            subFare = salesScreenState.subFare,
+            subGoods = salesScreenState.subGoods,
+            total = salesScreenState.total,
             isDrivingTicketInSelectedGoods = false,
-            normalTicketCount = adultCount,
-            accompanyTicketCount = adultCount,
-            drivingTicketCount = adultCount,
+            normalTicketCount = salesScreenState.normalTicketCount,
+            accompanyTicketCount = salesScreenState.accompanyTicketCount,
+            drivingTicketCount = salesScreenState.drivingTicketCount,
         )
     }
 
@@ -158,21 +158,13 @@ private fun SalesScreen(
             SalesViewModel.UiState.Idle -> {}
             SalesViewModel.UiState.ResetError -> {}
 
-
-            is SalesViewModel.UiState.UpdatingScreen -> {
-                adultCount = uiState.state.adultCount
-                childCount = uiState.state.childCount
-                moveToIdle()
-            }
-
-
             SalesViewModel.UiState.UpdateSuccess -> {
 
             }
 
             SalesViewModel.UiState.Resetting -> {}
-            SalesViewModel.UiState.UpdateInProgress -> {}
             SalesViewModel.UiState.ResetSuccess -> {}
+
         }
     }
 }
