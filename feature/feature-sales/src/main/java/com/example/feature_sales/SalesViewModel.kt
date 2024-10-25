@@ -88,9 +88,13 @@ class SalesViewModel @Inject constructor(
             adultNum = _salesScreenState.value.adultCount,
             childNum = _salesScreenState.value.childCount
         )
+        val goodsSum = calculator.calGoodsSum(_salesScreenState.value.selectedGoods)
+
         _salesScreenState.value = _salesScreenState.value.copy(subFare = fare)
         _salesScreenState.value = _salesScreenState.value.copy(normalTicketCount = normalTicketCount)
         _salesScreenState.value = _salesScreenState.value.copy(accompanyTicketCount = accompanyTicketCount)
+        _salesScreenState.value = _salesScreenState.value.copy(subGoods = goodsSum)
+        _salesScreenState.value = _salesScreenState.value.copy(total = fare + goodsSum)
     }
 
     fun addItem(goods: Goods) {
@@ -104,10 +108,12 @@ class SalesViewModel @Inject constructor(
                 }
             }
             _salesScreenState.value = _salesScreenState.value.copy(selectedGoods = updatedGoodsList)
+            calculate()
         } else {
             _salesScreenState.value = _salesScreenState.value.copy(
                 selectedGoods = _salesScreenState.value.selectedGoods + CartItem(goods, 1)
             )
+            calculate()
         }
     }
 
@@ -123,10 +129,12 @@ class SalesViewModel @Inject constructor(
                     }
                 }
                 _salesScreenState.value = _salesScreenState.value.copy(selectedGoods = updatedGoodsList)
+                calculate()
             } else {
                 _salesScreenState.value = _salesScreenState.value.copy(
                     selectedGoods = _salesScreenState.value.selectedGoods - cartItem
                 )
+                calculate()
             }
         }
     }
@@ -142,6 +150,7 @@ class SalesViewModel @Inject constructor(
                 }
             }
             _salesScreenState.value = _salesScreenState.value.copy(selectedGoods = updatedGoodsList)
+            calculate()
         }
     }
 
@@ -149,6 +158,7 @@ class SalesViewModel @Inject constructor(
         _salesScreenState.value = _salesScreenState.value.copy(
             selectedGoods = _salesScreenState.value.selectedGoods - cartItem
         )
+        calculate()
     }
 
 }

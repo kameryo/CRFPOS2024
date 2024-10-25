@@ -25,11 +25,11 @@ class Calculator {
         }
     }
 
-//    fun calSubTotalPendingPurchase(selectedList: List<PendingPurchase>?): Int {
-//        if (selectedList != null) {
-//            return selectedList.sumOf { it.amount }
-//        }
-//        return 0
-//    }
+    fun calGoodsSum(selectedList: List<CartItem>?): Int {
+        if (selectedList != null) {
+            return selectedList.sumOf { it.goods.price.toInt() * it.quantity }
+        }
+        return 0
+    }
 
 }
