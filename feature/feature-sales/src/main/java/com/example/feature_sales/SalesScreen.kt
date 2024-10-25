@@ -20,7 +20,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -131,7 +131,7 @@ private fun SalesScreen(
                 title = { Text(stringResource(R.string.crfpos)) },
                 navigationIcon = {
                     IconButton(onClick = back) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
@@ -185,16 +185,13 @@ private fun SalesScreen(
                 reset()
             }
 
-            is SalesViewModel.UiState.Loading -> {}
-            SalesViewModel.UiState.Idle -> {}
-            SalesViewModel.UiState.ResetError -> {}
-
-            SalesViewModel.UiState.UpdateSuccess -> {
-
+            SalesViewModel.UiState.Resetting,
+            SalesViewModel.UiState.Idle -> {
             }
 
-            SalesViewModel.UiState.Resetting -> {}
-            SalesViewModel.UiState.ResetSuccess -> {}
+            SalesViewModel.UiState.ResetSuccess -> {
+                moveToIdle()
+            }
 
         }
     }
@@ -898,7 +895,7 @@ private fun SalesScreenPreview() {
                 title = { Text(stringResource(R.string.crfpos)) },
                 navigationIcon = {
                     IconButton(onClick = { }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {

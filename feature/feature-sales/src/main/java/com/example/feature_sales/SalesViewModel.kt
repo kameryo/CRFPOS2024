@@ -21,7 +21,7 @@ data class SalesScreenState(
     val normalTicketCount: Int = 0,
     val accompanyTicketCount: Int = 0,
     val drivingTicketCount: Int = 0,
-    )
+)
 
 
 @HiltViewModel
@@ -30,16 +30,9 @@ class SalesViewModel @Inject constructor(
 ) : ViewModel() {
     sealed interface UiState {
         data object Initial : UiState
-        data object Loading : UiState
         data object Resetting : UiState
         data object ResetSuccess : UiState
-        data object ResetError : UiState
-//        data class UpdatingScreen(val state: SalesScreenState) : UiState
-
         data object Idle : UiState
-        
-        data object UpdateSuccess : UiState
-
     }
 
     val goodsItems = goodsRepository.getAll()
@@ -57,7 +50,6 @@ class SalesViewModel @Inject constructor(
     fun moveToIdle() {
         _uiState.value = UiState.Idle
     }
-
 
     fun reset() {
         _uiState.value = UiState.Resetting
@@ -91,8 +83,10 @@ class SalesViewModel @Inject constructor(
         val goodsSum = calculator.calGoodsSum(_salesScreenState.value.selectedGoods)
 
         _salesScreenState.value = _salesScreenState.value.copy(subFare = fare)
-        _salesScreenState.value = _salesScreenState.value.copy(normalTicketCount = normalTicketCount)
-        _salesScreenState.value = _salesScreenState.value.copy(accompanyTicketCount = accompanyTicketCount)
+        _salesScreenState.value =
+            _salesScreenState.value.copy(normalTicketCount = normalTicketCount)
+        _salesScreenState.value =
+            _salesScreenState.value.copy(accompanyTicketCount = accompanyTicketCount)
         _salesScreenState.value = _salesScreenState.value.copy(subGoods = goodsSum)
         _salesScreenState.value = _salesScreenState.value.copy(total = fare + goodsSum)
     }
@@ -118,7 +112,8 @@ class SalesViewModel @Inject constructor(
     }
 
     fun minusItem(cartItem: CartItem) {
-        val existingItem = _salesScreenState.value.selectedGoods.find { it.goods.id == cartItem.goods.id }
+        val existingItem =
+            _salesScreenState.value.selectedGoods.find { it.goods.id == cartItem.goods.id }
         if (existingItem != null) {
             if (existingItem.quantity > 1) {
                 val updatedGoodsList = _salesScreenState.value.selectedGoods.map { currentItem ->
@@ -128,7 +123,8 @@ class SalesViewModel @Inject constructor(
                         currentItem
                     }
                 }
-                _salesScreenState.value = _salesScreenState.value.copy(selectedGoods = updatedGoodsList)
+                _salesScreenState.value =
+                    _salesScreenState.value.copy(selectedGoods = updatedGoodsList)
                 calculate()
             } else {
                 _salesScreenState.value = _salesScreenState.value.copy(
@@ -140,7 +136,8 @@ class SalesViewModel @Inject constructor(
     }
 
     fun plusItem(cartItem: CartItem) {
-        val existingItem = _salesScreenState.value.selectedGoods.find { it.goods.id == cartItem.goods.id }
+        val existingItem =
+            _salesScreenState.value.selectedGoods.find { it.goods.id == cartItem.goods.id }
         if (existingItem != null) {
             val updatedGoodsList = _salesScreenState.value.selectedGoods.map { currentItem ->
                 if (currentItem.goods.id == cartItem.goods.id) {
