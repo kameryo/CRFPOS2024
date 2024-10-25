@@ -3,6 +3,8 @@ package com.example.feature_sales
 import androidx.lifecycle.ViewModel
 import com.example.data.repository.GoodsRepository
 import com.example.model.Calculator
+import com.example.model.CartItem
+import com.example.model.Goods
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +14,7 @@ import javax.inject.Inject
 data class SalesScreenState(
     val adultCount: Int = 0,
     val childCount: Int = 0,
-//    val selectedGoods: List<CartItem> = emptyList(),
+    val selectedGoods: List<CartItem> = emptyList(),
     val subFare: Int = 0,
     val subGoods: Int = 0,
     val total: Int = 0,
@@ -89,6 +91,64 @@ class SalesViewModel @Inject constructor(
         _salesScreenState.value = _salesScreenState.value.copy(subFare = fare)
         _salesScreenState.value = _salesScreenState.value.copy(normalTicketCount = normalTicketCount)
         _salesScreenState.value = _salesScreenState.value.copy(accompanyTicketCount = accompanyTicketCount)
+    }
+
+    fun addItem(goods: Goods) {
+        val existingItem = _salesScreenState.value.selectedGoods.find { it.goods.id == goods.id }
+        if (existingItem != null) {
+            val updatedGoodsList = _salesScreenState.value.selectedGoods.map { cartItem ->
+                if (cartItem.goods.id == goods.id) {
+                    cartItem.copy(quantity = cartItem.quantity + 1)
+                } else {
+                    cartItem
+                }
+            }
+            _salesScreenState.value = _salesScreenState.value.copy(selectedGoods = updatedGoodsList)
+        } else {
+            _salesScreenState.value = _salesScreenState.value.copy(
+                selectedGoods = _salesScreenState.value.selectedGoods + CartItem(goods, 1)
+            )
+        }
+    }
+
+    fun minusItem(cartItem: CartItem) {
+        val existingItem = _salesScreenState.value.selectedGoods.find { it.goods.id == cartItem.goods.id }
+        if (existingItem != null) {
+            if (existingItem.quantity > 1) {
+                val updatedGoodsList = _salesScreenState.value.selectedGoods.map { currentItem ->
+                    if (currentItem.goods.id == cartItem.goods.id) {
+                        currentItem.copy(quantity = currentItem.quantity - 1)
+                    } else {
+                        currentItem
+                    }
+                }
+                _salesScreenState.value = _salesScreenState.value.copy(selectedGoods = updatedGoodsList)
+            } else {
+                _salesScreenState.value = _salesScreenState.value.copy(
+                    selectedGoods = _salesScreenState.value.selectedGoods - cartItem
+                )
+            }
+        }
+    }
+
+    fun plusItem(cartItem: CartItem) {
+        val existingItem = _salesScreenState.value.selectedGoods.find { it.goods.id == cartItem.goods.id }
+        if (existingItem != null) {
+            val updatedGoodsList = _salesScreenState.value.selectedGoods.map { currentItem ->
+                if (currentItem.goods.id == cartItem.goods.id) {
+                    currentItem.copy(quantity = currentItem.quantity + 1)
+                } else {
+                    currentItem
+                }
+            }
+            _salesScreenState.value = _salesScreenState.value.copy(selectedGoods = updatedGoodsList)
+        }
+    }
+
+    fun deleteItem(cartItem: CartItem) {
+        _salesScreenState.value = _salesScreenState.value.copy(
+            selectedGoods = _salesScreenState.value.selectedGoods - cartItem
+        )
     }
 
 }

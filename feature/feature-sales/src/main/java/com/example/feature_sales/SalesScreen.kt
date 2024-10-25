@@ -21,10 +21,12 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -53,9 +55,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.model.CartItem
 import com.example.model.Goods
 
-private const val MAX_PRICE_DIGITS = 7
+private const val MAX_PRICE_DIGITS = 5
 private const val MAX_TICKET_DIGITS = 4
 
 
@@ -85,6 +88,18 @@ fun SalesScreen(
         },
         salesScreenState = salesScreenState,
         goodsList = goodsList,
+        onClickMinusForSelectedGoods = { cartItem ->
+            viewModel.minusItem(cartItem)
+        },
+        onClickPlusForSelectedGoods = { cartItem ->
+            viewModel.plusItem(cartItem)
+        },
+        onClickDeleteForSelectedGoods = { cartItem ->
+            viewModel.deleteItem(cartItem)
+        },
+        onClickGoodsFromList = { goods ->
+            viewModel.addItem(goods)
+        },
     )
 
 }
@@ -98,8 +113,12 @@ private fun SalesScreen(
     moveToIdle: () -> Unit,
     onChangeAdultCount: (Int) -> Unit,
     onChangeChildCount: (Int) -> Unit,
+    onClickMinusForSelectedGoods: (CartItem) -> Unit,
+    onClickPlusForSelectedGoods: (CartItem) -> Unit,
+    onClickDeleteForSelectedGoods: (CartItem) -> Unit,
     salesScreenState: SalesScreenState,
     goodsList: List<Goods>,
+    onClickGoodsFromList: (Goods) -> Unit,
 ) {
 
     var adultManualCountText by rememberSaveable { mutableStateOf("") }
@@ -152,6 +171,11 @@ private fun SalesScreen(
             accompanyTicketCount = salesScreenState.accompanyTicketCount,
             drivingTicketCount = salesScreenState.drivingTicketCount,
             goodsList = goodsList,
+            selectedGoods = salesScreenState.selectedGoods,
+            onClickMinusForSelectedGoods = { onClickMinusForSelectedGoods(it) },
+            onClickPlusForSelectedGoods = { onClickPlusForSelectedGoods(it) },
+            onClickDeleteForSelectedGoods = { onClickDeleteForSelectedGoods(it) },
+            onClickGoodsFromList = { onClickGoodsFromList(it) },
         )
     }
 
@@ -181,20 +205,28 @@ private fun SalesScreenContent(
     modifier: Modifier = Modifier,
     adultCount: Int,
     childCount: Int,
+    subFare: Int,
+    subGoods: Int,
+    total: Int,
+    normalTicketCount: Int,
+    accompanyTicketCount: Int,
+    drivingTicketCount: Int,
+    selectedGoods: List<CartItem>,
+
     adultManualCountText: String,
     childManualCountText: String,
     onChangeAdultCount: (Int) -> Unit,
     onChangeChildCount: (Int) -> Unit,
     onChangeAdultManualCountText: (String) -> Unit,
     onChangeChildManualCountText: (String) -> Unit,
-    subFare: Int,
-    subGoods: Int,
-    total: Int,
+
+    onClickMinusForSelectedGoods: (CartItem) -> Unit,
+    onClickPlusForSelectedGoods: (CartItem) -> Unit,
+    onClickDeleteForSelectedGoods: (CartItem) -> Unit,
+
     isDrivingTicketInSelectedGoods: Boolean,
-    normalTicketCount: Int,
-    accompanyTicketCount: Int,
-    drivingTicketCount: Int,
     goodsList: List<Goods>,
+    onClickGoodsFromList: (Goods) -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -210,7 +242,13 @@ private fun SalesScreenContent(
                 adultCount = adultCount,
                 childCount = childCount,
             )
-            ShowCartItems()
+
+            ShowCartItems(
+                selectedGoods = selectedGoods.sortedBy { it.goods.id },
+                onClickMinusForSelectedGoods = { onClickMinusForSelectedGoods(it) },
+                onClickPlusForSelectedGoods = { onClickPlusForSelectedGoods(it) },
+                onClickDeleteForSelectedGoods = { onClickDeleteForSelectedGoods(it) },
+            )
         }
         Column(
             verticalArrangement = Arrangement.spacedBy(25.dp),
@@ -261,7 +299,8 @@ private fun SalesScreenContent(
             )
 
             ShowGoodsList(
-                goodsList = goodsList
+                goodsList = goodsList,
+                onClickGoodsFromList = { onClickGoodsFromList(it) }
             )
 
 
@@ -361,18 +400,27 @@ private fun ShowPersonCount(
 }
 
 @Composable
-private fun ShowCartItems() {
+private fun ShowCartItems(
+    selectedGoods: List<CartItem>,
+    onClickMinusForSelectedGoods: (CartItem) -> Unit,
+    onClickPlusForSelectedGoods: (CartItem) -> Unit,
+    onClickDeleteForSelectedGoods: (CartItem) -> Unit,
+) {
     LazyColumn {
-//                items(bindModel.selectedGoods) { selected ->
-//                    RequestingProductItemView(
-//                        productName = selected.name,
-//                        numOfOrder = selected.numOfOrder,
-//                        unitPrice = selected.unitPrice,
-//                        onClickMinus = { onClickMinusForSelectedGoods(selected) },
-//                        onClickPlus = { onClickPlusForSelectedGoods(selected) },
-//                        onClickDelete = { onClickDeleteForSelectedGoods(selected) },
-//                    )
-//                }
+        items(
+            count = selectedGoods.size,
+            key = { index -> selectedGoods[index].goods.id },
+            itemContent = { index ->
+                RequestingProductItemView(
+                    productName = selectedGoods[index].goods.name,
+                    numOfOrder = selectedGoods[index].quantity,
+                    unitPrice = selectedGoods[index].goods.price,
+                    onClickMinus = { onClickMinusForSelectedGoods(selectedGoods[index]) },
+                    onClickPlus = { onClickPlusForSelectedGoods(selectedGoods[index]) },
+                    onClickDelete = { onClickDeleteForSelectedGoods(selectedGoods[index]) },
+                )
+            }
+        )
     }
 }
 
@@ -625,6 +673,7 @@ private fun ShowSelectPersonCount(
 @Composable
 private fun ShowGoodsList(
     goodsList: List<Goods>,
+    onClickGoodsFromList: (Goods) -> Unit,
 ) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Adaptive(120.dp),
@@ -636,7 +685,7 @@ private fun ShowGoodsList(
                 GoodsListItem(
                     name = goodsList[index].name,
                     price = goodsList[index].price,
-                    onClick = {},
+                    onClick = { onClickGoodsFromList(goodsList[index]) },
                 )
             }
         )
@@ -671,6 +720,7 @@ fun GoodsListItem(
 
 @Composable
 private fun RequestingProductItemView(
+    modifier: Modifier = Modifier,
     productName: String,
     numOfOrder: Int,
     unitPrice: Long,
@@ -679,34 +729,55 @@ private fun RequestingProductItemView(
     onClickDelete: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.surface)
             .fillMaxWidth()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+            .padding(8.dp),
     ) {
         Text(
             text = productName,
-            fontSize = 20.sp,
-            color = Color.Black
+            style = MaterialTheme.typography.titleLarge,
         )
-        Text(
-            text = "$numOfOrder",
-            fontSize = 20.sp,
-            color = Color.Black
-        )
-        Text(
-            text = "$unitPrice",
-            fontSize = 20.sp,
-            color = Color.Black
-        )
-        IconButton(onClick = onClickMinus) {
-            Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
-        }
-        IconButton(onClick = onClickPlus) {
-            Icon(Icons.Filled.ArrowForward, contentDescription = "Forward")
-        }
-        IconButton(onClick = onClickDelete) {
-            Icon(Icons.Filled.Delete, contentDescription = "Delete")
+        Spacer(modifier = Modifier.weight(1f))
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                FilledTonalIconButton(onClick = onClickMinus) {
+                    Icon(imageVector = Icons.Default.KeyboardArrowDown, contentDescription = null)
+                }
+                Text(
+                    text = numOfOrder.toString(),
+                    style = MaterialTheme.typography.titleLarge,
+                    textAlign = TextAlign.Center,
+                )
+                FilledTonalIconButton(onClick = onClickPlus) {
+                    Icon(imageVector = Icons.Default.KeyboardArrowUp, contentDescription = null)
+                }
+            }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(id = R.string.yen, unitPrice),
+                    style = MaterialTheme.typography.titleLarge,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.width(
+                        // MAX_PRICE_DIGITS分のwidthを確保する
+                        with(LocalDensity.current) {
+                            MaterialTheme.typography.titleLarge.fontSize.toDp() * MAX_PRICE_DIGITS
+                        }
+                    )
+                )
+                FilledTonalIconButton(onClick = onClickDelete) {
+                    Icon(imageVector = Icons.Default.Delete, contentDescription = null)
+                }
+            }
         }
     }
 }
@@ -921,7 +992,50 @@ private fun SalesScreenPreview() {
                 ),
 
                 ),
+            selectedGoods = listOf(
+                CartItem(
+                    goods = Goods(
+                        id = 1,
+                        name = "商品商品1",
+                        price = 100,
+                        purchases = 0,
+                        remain = 0,
+                        isAvailable = true,
+                        displayOrder = 1,
+                    ),
+                    quantity = 1,
+                ),
+                CartItem(
+                    goods = Goods(
+                        id = 2,
+                        name = "商品2",
+                        price = 200,
+                        purchases = 0,
+                        remain = 0,
+                        isAvailable = true,
+                        displayOrder = 1,
+                    ),
+                    quantity = 2,
+                ),
+                CartItem(
+                    goods = Goods(
+                        id = 3,
+                        name = "商品3",
+                        price = 300,
+                        purchases = 0,
+                        remain = 0,
+                        isAvailable = true,
+                        displayOrder = 1,
+                    ),
+                    quantity = 3,
+                ),
+            ),
+            onClickMinusForSelectedGoods = { },
+            onClickPlusForSelectedGoods = {},
+            onClickDeleteForSelectedGoods = {},
+            onClickGoodsFromList = {},
         )
+
     }
 }
 
