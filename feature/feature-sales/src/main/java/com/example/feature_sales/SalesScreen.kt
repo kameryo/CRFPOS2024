@@ -138,8 +138,14 @@ private fun SalesScreen(
             onChangeChildManualCountText = {
                 childManualCountText = it
             },
-
-            )
+            subFare = adultCount,
+            subGoods = adultCount,
+            total = adultCount,
+            isDrivingTicketInSelectedGoods = false,
+            normalTicketCount = adultCount,
+            accompanyTicketCount = adultCount,
+            drivingTicketCount = adultCount,
+        )
     }
 
     LaunchedEffect(uiState) {
@@ -182,6 +188,13 @@ private fun SalesScreenContent(
     onChangeChildCount: (Int) -> Unit,
     onChangeAdultManualCountText: (String) -> Unit,
     onChangeChildManualCountText: (String) -> Unit,
+    subFare: Int,
+    subGoods: Int,
+    total: Int,
+    isDrivingTicketInSelectedGoods: Boolean,
+    normalTicketCount: Int,
+    accompanyTicketCount: Int,
+    drivingTicketCount: Int,
 ) {
     Row(
         modifier = modifier
@@ -202,7 +215,16 @@ private fun SalesScreenContent(
         Column(
             verticalArrangement = Arrangement.spacedBy(25.dp),
         ) {
-            ShowSummary()
+            ShowSummary(
+                subFare = subFare,
+                subGoods = subGoods,
+                total = total,
+                isDrivingTicketInSelectedGoods = isDrivingTicketInSelectedGoods,
+                normalTicketCount = normalTicketCount,
+                accompanyTicketCount = accompanyTicketCount,
+                drivingTicketCount = drivingTicketCount,
+            )
+
             ShowSelectPersonCount(
                 adultCount = adultCount,
                 childCount = childCount,
@@ -349,7 +371,15 @@ private fun ShowCartItems() {
 }
 
 @Composable
-private fun ShowSummary() {
+private fun ShowSummary(
+    subFare: Int,
+    subGoods: Int,
+    total: Int,
+    isDrivingTicketInSelectedGoods: Boolean,
+    normalTicketCount: Int,
+    accompanyTicketCount: Int,
+    drivingTicketCount: Int,
+) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth(),
@@ -361,9 +391,7 @@ private fun ShowSummary() {
                     fontSize = 25.sp,
                 )
                 Text(
-//                            text = stringResource(id = R.string.yen, bindModel.subtotalFare),
-                    text = stringResource(id = R.string.yen),
-
+                    text = stringResource(id = R.string.yen, subFare.toString()),
                     fontSize = 25.sp,
                     modifier = Modifier
                         .width(
@@ -382,9 +410,7 @@ private fun ShowSummary() {
                     fontSize = 25.sp,
                 )
                 Text(
-//                            text = stringResource(id = R.string.yen, bindModel.subtotalGoods),
-                    text = stringResource(id = R.string.yen),
-
+                    text = stringResource(id = R.string.yen, subGoods),
                     fontSize = 25.sp,
                     modifier = Modifier
                         .width(
@@ -403,14 +429,7 @@ private fun ShowSummary() {
                     fontSize = 30.sp,
                 )
                 Text(
-//                            text = stringResource(
-//                                id = R.string.yen,
-//                                bindModel.subtotalFare + bindModel.subtotalGoods
-//                            ),
-                    text = stringResource(
-                        id = R.string.yen,
-//                                bindModel.subtotalFare + bindModel.subtotalGoods
-                    ),
+                    text = stringResource(id = R.string.yen, total),
                     fontSize = 30.sp,
                     modifier = Modifier
                         .width(
@@ -426,8 +445,7 @@ private fun ShowSummary() {
         Column {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Column {
-//                            if (bindModel.subtotalFare != 0) {
-                    if (true) {
+                    if (subFare != 0) {
                         Text(
                             text = stringResource(id = R.string.normal_ticket),
                             fontSize = 27.sp,
@@ -437,8 +455,7 @@ private fun ShowSummary() {
                             fontSize = 27.sp
                         )
                     }
-//                            if (bindModel.selectedGoods.any { it.name == "運転体験券" }) {
-                    if (true) {
+                    if (isDrivingTicketInSelectedGoods) {
                         Text(
                             text = stringResource(id = R.string.driving_ticket),
                             fontSize = 27.sp
@@ -446,13 +463,9 @@ private fun ShowSummary() {
                     }
                 }
                 Column {
-//                            if (bindModel.subtotalFare != 0) {
-                    if (true) {
+                    if (subFare != 0) {
                         Text(
-                            text = stringResource(
-                                id = R.string.mai,
-//                                        bindModel.subtotalFare / 100
-                            ),
+                            text = stringResource(id = R.string.mai, normalTicketCount),
                             fontSize = 27.sp,
                             modifier = Modifier
                                 .width(
@@ -464,10 +477,7 @@ private fun ShowSummary() {
                             textAlign = TextAlign.End
                         )
                         Text(
-                            text = stringResource(
-                                id = R.string.mai,
-//                                        bindModel.adultCount + bindModel.childCount - bindModel.subtotalFare / 100
-                            ),
+                            text = stringResource(id = R.string.mai, accompanyTicketCount),
                             fontSize = 27.sp,
                             modifier = Modifier
                                 .width(
@@ -479,15 +489,9 @@ private fun ShowSummary() {
                             textAlign = TextAlign.End
                         )
                     }
-//                            if (bindModel.selectedGoods.any { it.name == "運転体験券" }) {
-                    if (true) {
+                    if (isDrivingTicketInSelectedGoods) {
                         Text(
-                            text = stringResource(
-                                id = R.string.mai,
-//                                        bindModel.selectedGoods.find { it.name == "運転体験券" }?.numOfOrder
-//                                            ?: 0
-//
-                            ),
+                            text = stringResource(id = R.string.mai, drivingTicketCount),
                             fontSize = 27.sp,
                             modifier = Modifier
                                 .width(
@@ -508,8 +512,7 @@ private fun ShowSummary() {
         AdjustButton(
             text = stringResource(id = R.string.adjust),
             onClick = {},
-//                    onClick = onClickAdjust,
-
+//          onClick = onClickAdjust,
             backgroundColor = Color.Yellow,
             textColor = Color.Black,
         )
@@ -792,8 +795,14 @@ private fun SalesScreenPreview() {
             onChangeChildCount = {},
             onChangeAdultManualCountText = {},
             onChangeChildManualCountText = {},
-
-            )
+            subFare = 1,
+            subGoods = 0,
+            total = 1,
+            isDrivingTicketInSelectedGoods = true,
+            normalTicketCount = 1,
+            accompanyTicketCount = 1,
+            drivingTicketCount = 3,
+        )
     }
 }
 

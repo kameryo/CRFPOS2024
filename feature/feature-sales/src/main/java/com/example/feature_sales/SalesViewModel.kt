@@ -2,6 +2,7 @@ package com.example.feature_sales
 
 import androidx.lifecycle.ViewModel
 import com.example.data.repository.GoodsRepository
+import com.example.model.Calculator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -9,11 +10,18 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 data class SalesScreenState(
-    val adultCount: Int,
-    val childCount: Int,
-    val adultManualCountText: String,
-    val childManualCountText: String,
-)
+    val adultCount: Int = 0,
+    val childCount: Int = 0,
+    val adultManualCountText: String = "",
+    val childManualCountText: String = "",
+//    val selectedGoods: List<CartItem> = emptyList(),
+    val subFare: Int = 0,
+    val subGoods: Int = 0,
+    val total: Int = 0,
+    val normalTicketCount: Int = 0,
+    val accompanyTicketCount: Int = 0,
+    val drivingTicketCount: Int = 0,
+    )
 
 
 @HiltViewModel
@@ -35,13 +43,10 @@ class SalesViewModel @Inject constructor(
 
     }
 
+    private val calculator = Calculator()
+
     private val _salesScreenState = MutableStateFlow<SalesScreenState>(
-        SalesScreenState(
-            adultCount = 0,
-            childCount = 0,
-            adultManualCountText = "",
-            childManualCountText = "",
-        )
+        SalesScreenState()
     )
     private val salesScreenState: StateFlow<SalesScreenState> = _salesScreenState.asStateFlow()
 
@@ -55,12 +60,7 @@ class SalesViewModel @Inject constructor(
 
     fun reset() {
         _uiState.value = UiState.Resetting
-        _salesScreenState.value = SalesScreenState(
-            adultCount = 0,
-            childCount = 0,
-            adultManualCountText = "",
-            childManualCountText = "",
-        )
+        _salesScreenState.value = SalesScreenState()
         _uiState.value = UiState.ResetSuccess
         _uiState.value = UiState.UpdatingScreen(state = _salesScreenState.value)
     }
