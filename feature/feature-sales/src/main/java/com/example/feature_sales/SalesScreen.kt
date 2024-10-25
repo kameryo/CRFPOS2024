@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -51,6 +53,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.model.Goods
 
 private const val MAX_PRICE_DIGITS = 7
 private const val MAX_TICKET_DIGITS = 4
@@ -63,6 +66,7 @@ fun SalesScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val salesScreenState by viewModel.salesScreenState.collectAsState()
+    val goodsList by viewModel.goodsItems.collectAsState(initial = emptyList())
 
     SalesScreen(
         uiState = uiState,
@@ -80,6 +84,7 @@ fun SalesScreen(
             viewModel.updateChildCount(childCount)
         },
         salesScreenState = salesScreenState,
+        goodsList = goodsList,
     )
 
 }
@@ -94,6 +99,7 @@ private fun SalesScreen(
     onChangeAdultCount: (Int) -> Unit,
     onChangeChildCount: (Int) -> Unit,
     salesScreenState: SalesScreenState,
+    goodsList: List<Goods>,
 ) {
 
     var adultManualCountText by rememberSaveable { mutableStateOf("") }
@@ -145,6 +151,7 @@ private fun SalesScreen(
             normalTicketCount = salesScreenState.normalTicketCount,
             accompanyTicketCount = salesScreenState.accompanyTicketCount,
             drivingTicketCount = salesScreenState.drivingTicketCount,
+            goodsList = goodsList,
         )
     }
 
@@ -187,6 +194,7 @@ private fun SalesScreenContent(
     normalTicketCount: Int,
     accompanyTicketCount: Int,
     drivingTicketCount: Int,
+    goodsList: List<Goods>,
 ) {
     Row(
         modifier = modifier
@@ -251,6 +259,12 @@ private fun SalesScreenContent(
                     }
                 },
             )
+
+            ShowGoodsList(
+                goodsList = goodsList
+            )
+
+
         }
     }
 }
@@ -609,6 +623,53 @@ private fun ShowSelectPersonCount(
 }
 
 @Composable
+private fun ShowGoodsList(
+    goodsList: List<Goods>,
+) {
+    LazyVerticalStaggeredGrid(
+        columns = StaggeredGridCells.Adaptive(120.dp),
+    ) {
+        items(
+            count = goodsList.size,
+            key = { index -> goodsList[index].id },
+            itemContent = { index ->
+                GoodsListItem(
+                    name = goodsList[index].name,
+                    price = goodsList[index].price,
+                    onClick = {},
+                )
+            }
+        )
+    }
+}
+
+@Composable
+fun GoodsListItem(
+    name: String,
+    price: Long,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    Column(
+        modifier = modifier
+            .padding(5.dp)
+            .clickable(onClick = onClick)
+            .background(Color.White)
+            .padding(16.dp),
+    ) {
+        Text(
+            text = name,
+            style = MaterialTheme.typography.bodyLarge,
+        )
+        Text(
+            text = price.toString(),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+    }
+}
+
+
+@Composable
 private fun RequestingProductItemView(
     productName: String,
     numOfOrder: Int,
@@ -794,6 +855,72 @@ private fun SalesScreenPreview() {
             normalTicketCount = 1,
             accompanyTicketCount = 1,
             drivingTicketCount = 3,
+            goodsList = listOf(
+                Goods(
+                    id = 1,
+                    name = "商品1",
+                    price = 100,
+                    purchases = 0,
+                    remain = 0,
+                    isAvailable = true,
+                    displayOrder = 1,
+                ),
+                Goods(
+                    id = 2,
+                    name = "商品2",
+                    price = 200,
+                    purchases = 0,
+                    remain = 0,
+                    isAvailable = true,
+                    displayOrder = 1,
+                ),
+                Goods(
+                    id = 3,
+                    name = "商品3",
+                    price = 300,
+                    purchases = 0,
+                    remain = 0,
+                    isAvailable = true,
+                    displayOrder = 1,
+                ),
+                Goods(
+                    id = 4,
+                    name = "商品4",
+                    price = 400,
+                    purchases = 0,
+                    remain = 0,
+                    isAvailable = true,
+                    displayOrder = 1,
+                ),
+                Goods(
+                    id = 5,
+                    name = "商品5",
+                    price = 500,
+                    purchases = 0,
+                    remain = 0,
+                    isAvailable = true,
+                    displayOrder = 1,
+                ),
+                Goods(
+                    id = 6,
+                    name = "商品6",
+                    price = 600,
+                    purchases = 0,
+                    remain = 0,
+                    isAvailable = true,
+                    displayOrder = 1,
+                ),
+                Goods(
+                    id = 7,
+                    name = "商品7",
+                    price = 700,
+                    purchases = 0,
+                    remain = 0,
+                    isAvailable = true,
+                    displayOrder = 1,
+                ),
+
+                ),
         )
     }
 }

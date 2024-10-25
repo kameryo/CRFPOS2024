@@ -40,6 +40,8 @@ class SalesViewModel @Inject constructor(
 
     }
 
+    val goodsItems = goodsRepository.getAll()
+
     private val calculator = Calculator()
 
     private val _salesScreenState = MutableStateFlow(
