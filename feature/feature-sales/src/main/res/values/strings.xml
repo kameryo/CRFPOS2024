@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="crfpos">CRFPOS</string>
+    <string name="adult">大人</string>
+    <string name="child">子供</string>
+    <string name="fare">運賃</string>
+    <string name="yen">円</string>
+    <string name="sum">合計</string>
+    <string name="normal_ticket">硬券</string>
+    <string name="accompany_ticket">付添券</string>
+    <string name="driving_ticket">運転券</string>
+    <string name="mai">枚</string>
+    <string name="adjust">清算</string>
+    <string name="buppan">物販</string>
+    <string name="input">入力</string>
+</resources>

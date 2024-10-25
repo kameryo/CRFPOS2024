@@ -59,8 +59,6 @@ dependencies {
     ksp(libs.hilt.compiler)
     ksp(libs.hilt.android.compiler)
 
-//    ksp(libs.hilt.compiler)
-//    ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.activity.compose)
 
     testImplementation(libs.junit)

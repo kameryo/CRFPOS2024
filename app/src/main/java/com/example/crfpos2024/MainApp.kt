@@ -9,6 +9,8 @@ import com.example.feature_goods.AddGoodsScreen
 import com.example.feature_goods.AddGoodsViewModel
 import com.example.feature_goods.GoodsListViewModel
 import com.example.feature_goods.GoodsScreen
+import com.example.feature_sales.SalesScreen
+import com.example.feature_sales.SalesViewModel
 
 @Composable
 fun MainApp() {
@@ -30,7 +32,13 @@ fun MainApp() {
         }
 
         composable("/sales") {
-//            SalesScreen()
+            val viewModel: SalesViewModel = hiltViewModel()
+            SalesScreen(
+                viewModel = viewModel,
+                back = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         composable("/record") {
