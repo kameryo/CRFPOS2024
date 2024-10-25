@@ -42,7 +42,7 @@ class SalesViewModel @Inject constructor(
 
     private val calculator = Calculator()
 
-    private val _salesScreenState = MutableStateFlow<SalesScreenState>(
+    private val _salesScreenState = MutableStateFlow(
         SalesScreenState()
     )
     val salesScreenState: StateFlow<SalesScreenState> = _salesScreenState.asStateFlow()
