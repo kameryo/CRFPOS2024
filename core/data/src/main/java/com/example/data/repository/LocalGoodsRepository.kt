@@ -40,15 +40,33 @@ class LocalGoodsRepository @Inject constructor(
     }
 
     override suspend fun getById(id: Long): Goods? {
-        TODO("Not yet implemented")
+        return goodsDao.getById(id)?.toModel()
     }
 
     override suspend fun update(goods: Goods) {
-        TODO("Not yet implemented")
+        val entity = GoodsEntity(
+            id = goods.id,
+            name = goods.name,
+            price = goods.price,
+            purchases = goods.purchases,
+            remain = goods.remain,
+            isAvailable = goods.isAvailable,
+            displayOrder = goods.displayOrder,
+        )
+        goodsDao.update(entity)
     }
 
     override suspend fun delete(goods: Goods) {
-        TODO("Not yet implemented")
+        val entity = GoodsEntity(
+            id = goods.id,
+            name = goods.name,
+            price = goods.price,
+            purchases = goods.purchases,
+            remain = goods.remain,
+            isAvailable = goods.isAvailable,
+            displayOrder = goods.displayOrder,
+        )
+        goodsDao.delete(entity)
     }
 
     private fun GoodsEntity.toModel() = Goods(

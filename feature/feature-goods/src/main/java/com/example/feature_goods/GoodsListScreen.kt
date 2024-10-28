@@ -1,6 +1,7 @@
 package com.example.feature_goods
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -24,12 +25,14 @@ fun GoodsScreen(
     viewModel: GoodsListViewModel,
     back: () -> Unit,
     toAddGoodsScreen: () -> Unit,
+    toEdit: (Long) -> Unit,
 ) {
     val items = viewModel.items.collectAsState(initial = emptyList())
     GoodsScreen(
         goodsList = items.value,
         back = back,
-        toAddGoodsScreen = toAddGoodsScreen
+        toAddGoodsScreen = toAddGoodsScreen,
+        toEdit = toEdit,
     )
 }
 
@@ -39,6 +42,7 @@ private fun GoodsScreen(
     goodsList: List<Goods>,
     back: () -> Unit,
     toAddGoodsScreen: () -> Unit,
+    toEdit: (Long) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -66,10 +70,9 @@ private fun GoodsScreen(
                 itemContent = {
                     GoodsListItem(
                         goods = goodsList[it],
-//                        update = update,
-//                        onClick = {
-//                            toEdit(todoList[it].id)
-//                        }
+                        onClick = {
+                            toEdit(goodsList[it].id)
+                        }
 
                     )
                 }
@@ -82,18 +85,18 @@ private fun GoodsScreen(
 @Composable
 fun GoodsListItem(
     goods: Goods,
-//    update: (Goods) -> Unit,
-//    onClick: () -> Unit,
+    onClick: () -> Unit,
 ) {
     ListItem(
-        headlineContent = { Text(goods.name) },
-//        leadingContent = {
-//            Checkbox(checked = todo.isDone, onCheckedChange = {
-//                update(todo.copy(isDone = it))
-//            })
-//        },
+        headlineContent = {
+            Row {
+                Text(goods.name)
+                Text(goods.price.toString())
+            }
+        },
+
         modifier = Modifier.clickable {
-//            onClick()
+            onClick()
         }
     )
     Divider()

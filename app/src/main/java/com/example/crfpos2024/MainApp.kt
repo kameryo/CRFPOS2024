@@ -2,11 +2,15 @@ package com.example.crfpos2024
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.feature_goods.AddGoodsScreen
 import com.example.feature_goods.AddGoodsViewModel
+import com.example.feature_goods.EditGoodsScreen
+import com.example.feature_goods.EditGoodsViewModel
 import com.example.feature_goods.GoodsListViewModel
 import com.example.feature_goods.GoodsScreen
 import com.example.feature_sales.SalesScreen
@@ -55,6 +59,9 @@ fun MainApp() {
                     navController.navigate("/goods/add")
                 },
                 viewModel = viewModel,
+                toEdit = { id ->
+                    navController.navigate("/goods/$id")
+                },
             )
         }
 
@@ -67,6 +74,23 @@ fun MainApp() {
                 viewModel = viewModel,
             )
         }
+
+        composable("/goods/{goodsId}",
+            arguments = listOf(
+                navArgument("goodsId") {
+                    type = NavType.LongType
+                }
+            )
+        ) {
+            val viewModel: EditGoodsViewModel = hiltViewModel()
+            EditGoodsScreen(
+                back = {
+                    navController.popBackStack()
+                },
+                viewModel = viewModel,
+            )
+        }
+
     }
 
 }
