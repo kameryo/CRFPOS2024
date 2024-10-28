@@ -692,7 +692,7 @@ private fun ShowGoodsList(
 @Composable
 fun GoodsListItem(
     name: String,
-    price: Long,
+    price: Int,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
@@ -720,7 +720,7 @@ private fun RequestingProductItemView(
     modifier: Modifier = Modifier,
     productName: String,
     numOfOrder: Int,
-    unitPrice: Long,
+    unitPrice: Int,
     onClickMinus: () -> Unit,
     onClickPlus: () -> Unit,
     onClickDelete: () -> Unit,

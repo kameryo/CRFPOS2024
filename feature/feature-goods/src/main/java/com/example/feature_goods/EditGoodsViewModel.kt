@@ -73,24 +73,26 @@ class EditGoodsViewModel @Inject constructor(
         }
     }
 
-    fun update(name: String, price: Long) {
+    fun update(goods: Goods) {
         val currentState = _uiState.value
         if (currentState !is UiState.Idle) {
             return
         }
 
-        if (name.isEmpty()) {
-            _uiState.value = UiState.InputError(currentState.goods)
-            return
-        }
         _uiState.value = UiState.UpdateInProgress
         viewModelScope.launch {
             try {
                 goodsRepository.update(
                     currentState.goods.copy(
-
-                        name = name,
-                        price = price,
+                        name = goods.name,
+                        price = goods.price,
+                        isAvailable = goods.isAvailable,
+                        displayOrder = goods.displayOrder,
+                        isPartOfSet = goods.isPartOfSet,
+                        setId = goods.setId,
+                        setPrice = goods.setPrice,
+                        setRequiredQuantity = goods.setRequiredQuantity,
+                        isBulkOnly = goods.isBulkOnly,
                     )
                 )
                 _uiState.value = UiState.UpdateSuccess

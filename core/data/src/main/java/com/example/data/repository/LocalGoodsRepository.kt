@@ -10,25 +10,35 @@ import javax.inject.Inject
 class LocalGoodsRepository @Inject constructor(
     private val goodsDao: GoodsDao,
 ) : GoodsRepository {
-    override suspend fun add(name: String, price: Long): Goods {
-        val goods = GoodsEntity(
+    override suspend fun add(goods: Goods): Goods {
+        val goodsEntity = GoodsEntity(
             id = 0,
-            name = name,
-            price = price,
-            purchases = 0,
-            remain = 0,
-            isAvailable = true,
-            displayOrder = 0
+            name = goods.name,
+            price = goods.price,
+            purchases = goods.purchases,
+            remain = goods.remain,
+            isAvailable = goods.isAvailable,
+            displayOrder = goods.displayOrder,
+            isPartOfSet = goods.isPartOfSet,
+            setId = goods.setId,
+            setPrice = goods.setPrice,
+            setRequiredQuantity = goods.setRequiredQuantity,
+            isBulkOnly = goods.isBulkOnly,
         )
-        val id = goodsDao.add(goods)
+        val id = goodsDao.add(goodsEntity)
         return Goods(
             id = id,
-            name = name,
-            price = price,
-            purchases = 0,
-            remain = 0,
-            isAvailable = true,
-            displayOrder = id
+            name = goods.name,
+            price = goods.price,
+            purchases = goods.purchases,
+            remain = goods.remain,
+            isAvailable = goods.isAvailable,
+            displayOrder = goods.displayOrder,
+            isPartOfSet = goods.isPartOfSet,
+            setId = goods.setId,
+            setPrice = goods.setPrice,
+            setRequiredQuantity = goods.setRequiredQuantity,
+            isBulkOnly = goods.isBulkOnly,
         )
 
     }
