@@ -41,6 +41,8 @@ dependencies {
 
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(project(":core:model"))
+    implementation(libs.google.gson)
     ksp(libs.room.compiler)
 
     testImplementation(libs.junit)

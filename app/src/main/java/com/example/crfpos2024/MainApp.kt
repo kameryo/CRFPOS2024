@@ -13,6 +13,8 @@ import com.example.feature_goods.EditGoodsScreen
 import com.example.feature_goods.EditGoodsViewModel
 import com.example.feature_goods.GoodsListViewModel
 import com.example.feature_goods.GoodsScreen
+import com.example.feature_record.RecordScreen
+import com.example.feature_record.RecordViewModel
 import com.example.feature_sales.SalesScreen
 import com.example.feature_sales.SalesViewModel
 
@@ -46,7 +48,16 @@ fun MainApp() {
         }
 
         composable("/record") {
-//            RecordScreen()
+            val viewModel: RecordViewModel = hiltViewModel()
+            RecordScreen(
+                back = {
+                    navController.popBackStack()
+                },
+                viewModel = viewModel,
+                toEdit = { id ->
+                    navController.navigate("/record/$id")
+                },
+            )
         }
 
         composable("/goods") {

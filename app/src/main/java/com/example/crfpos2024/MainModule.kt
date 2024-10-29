@@ -4,8 +4,12 @@ import android.content.Context
 import androidx.room.Room
 import com.example.data.repository.GoodsRepository
 import com.example.data.repository.LocalGoodsRepository
+import com.example.data.repository.LocalRecordRepository
+import com.example.data.repository.RecordRepository
 import com.example.database.GoodsDatabase
+import com.example.database.RecordDatabase
 import com.example.database.dao.GoodsDao
+import com.example.database.dao.RecordDao
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -20,7 +24,7 @@ import javax.inject.Singleton
 object DatabaseModule {
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): GoodsDatabase {
+    fun provideGoodsDatabase(@ApplicationContext context: Context): GoodsDatabase {
         return Room.databaseBuilder(
             context,
             GoodsDatabase::class.java,
@@ -31,8 +35,25 @@ object DatabaseModule {
 
     @Provides
     @Singleton
+    fun provideRecordDatabase(@ApplicationContext context: Context): RecordDatabase {
+        return Room.databaseBuilder(
+            context,
+            RecordDatabase::class.java,
+            "record.db",
+        ).build()
+
+    }
+
+    @Provides
+    @Singleton
     fun provideGoodsDao(db: GoodsDatabase): GoodsDao {
         return db.goodsDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecordDao(db: RecordDatabase): RecordDao {
+        return db.recordDao()
     }
 }
 
@@ -42,4 +63,9 @@ abstract class MainModule {
     @Binds
     @Singleton
     abstract fun bindGoodsRepository(impl: LocalGoodsRepository): GoodsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRecordRepository(impl: LocalRecordRepository): RecordRepository
 }
+

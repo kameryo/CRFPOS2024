@@ -64,6 +64,7 @@ dependencies {
 
     implementation(libs.hilt.android)
     implementation(project(":feature:feature-sales"))
+    implementation(project(":feature:feature-record"))
     ksp(libs.hilt.compiler)
     ksp(libs.hilt.android.compiler)
 
