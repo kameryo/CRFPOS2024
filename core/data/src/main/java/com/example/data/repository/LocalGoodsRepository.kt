@@ -54,7 +54,7 @@ class LocalGoodsRepository @Inject constructor(
     }
 
     override suspend fun update(goods: Goods) {
-        val entity = GoodsEntity(
+        val goodsEntity = GoodsEntity(
             id = goods.id,
             name = goods.name,
             price = goods.price,
@@ -62,8 +62,13 @@ class LocalGoodsRepository @Inject constructor(
             remain = goods.remain,
             isAvailable = goods.isAvailable,
             displayOrder = goods.displayOrder,
+            isPartOfSet = goods.isPartOfSet,
+            setId = goods.setId,
+            setPrice = goods.setPrice,
+            setRequiredQuantity = goods.setRequiredQuantity,
+            isBulkOnly = goods.isBulkOnly,
         )
-        goodsDao.update(entity)
+        goodsDao.update(goodsEntity)
     }
 
     override suspend fun delete(goods: Goods) {
@@ -75,7 +80,13 @@ class LocalGoodsRepository @Inject constructor(
             remain = goods.remain,
             isAvailable = goods.isAvailable,
             displayOrder = goods.displayOrder,
+            isPartOfSet = goods.isPartOfSet,
+            setId = goods.setId,
+            setPrice = goods.setPrice,
+            setRequiredQuantity = goods.setRequiredQuantity,
+            isBulkOnly = goods.isBulkOnly,
         )
+
         goodsDao.delete(entity)
     }
 
@@ -87,6 +98,11 @@ class LocalGoodsRepository @Inject constructor(
         remain = remain,
         isAvailable = isAvailable,
         displayOrder = displayOrder,
+        isPartOfSet = isPartOfSet,
+        setId = setId,
+        setPrice = setPrice,
+        setRequiredQuantity = setRequiredQuantity,
+        isBulkOnly = isBulkOnly,
     )
 
 }
