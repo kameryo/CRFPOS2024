@@ -26,7 +26,25 @@ class Calculator {
     }
 
     fun calGoodsSum(selectedList: List<CartItem>): Int {
-        return selectedList.sumOf { it.goods.price * it.quantity }
+        // セット商品以外の合計金額
+        val normalTotal = selectedList.filter { !it.goods.isPartOfSet }
+            .sumOf { it.goods.price * it.quantity }
+
+        val setTotal = selectedList.filter { it.goods.isPartOfSet }
+            .groupBy { it.goods.setId }
+            .map { (_, items) ->
+                val setItem = items.first()
+                val setPrice = setItem.goods.setPrice ?: 0
+                val setRequiredQuantity = setItem.goods.setRequiredQuantity ?: 0
+                val setQuantity = items.sumOf { it.quantity }
+                val setCount = setQuantity / setRequiredQuantity
+                val remainder = setQuantity % setRequiredQuantity
+                val setTotal = setCount * setPrice + remainder * setItem.goods.price
+                setTotal
+            }
+            .sum()
+
+        return normalTotal + setTotal
     }
 
 }
