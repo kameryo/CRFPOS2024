@@ -25,11 +25,8 @@ class Calculator {
         }
     }
 
-    fun calGoodsSum(selectedList: List<CartItem>?): Int {
-        if (selectedList != null) {
-            return selectedList.sumOf { it.goods.price * it.quantity }
-        }
-        return 0
+    fun calGoodsSum(selectedList: List<CartItem>): Int {
+        return selectedList.sumOf { it.goods.price * it.quantity }
     }
 
 }
