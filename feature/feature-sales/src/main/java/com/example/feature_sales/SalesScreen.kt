@@ -100,6 +100,10 @@ fun SalesScreen(
         onClickGoodsFromList = { goods ->
             viewModel.addItem(goods)
         },
+        onClickAdjust = {
+            viewModel.saveRecord()
+            viewModel.reset()
+        }
     )
 
 }
@@ -119,6 +123,7 @@ private fun SalesScreen(
     salesScreenState: SalesScreenState,
     goodsList: List<Goods>,
     onClickGoodsFromList: (Goods) -> Unit,
+    onClickAdjust: () -> Unit
 ) {
 
     var adultManualCountText by rememberSaveable { mutableStateOf("") }
@@ -176,6 +181,7 @@ private fun SalesScreen(
             onClickPlusForSelectedGoods = { onClickPlusForSelectedGoods(it) },
             onClickDeleteForSelectedGoods = { onClickDeleteForSelectedGoods(it) },
             onClickGoodsFromList = { onClickGoodsFromList(it) },
+            onClickAdjust = { onClickAdjust() }
         )
     }
 
@@ -224,6 +230,7 @@ private fun SalesScreenContent(
     isDrivingTicketInSelectedGoods: Boolean,
     goodsList: List<Goods>,
     onClickGoodsFromList: (Goods) -> Unit,
+    onClickAdjust: () -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -258,6 +265,7 @@ private fun SalesScreenContent(
                 normalTicketCount = normalTicketCount,
                 accompanyTicketCount = accompanyTicketCount,
                 drivingTicketCount = drivingTicketCount,
+                onClickAdjust = onClickAdjust,
             )
 
             ShowSelectPersonCount(
@@ -430,6 +438,7 @@ private fun ShowSummary(
     normalTicketCount: Int,
     accompanyTicketCount: Int,
     drivingTicketCount: Int,
+    onClickAdjust: () -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -562,8 +571,7 @@ private fun ShowSummary(
         }
         AdjustButton(
             text = stringResource(id = R.string.adjust),
-            onClick = {},
-//          onClick = onClickAdjust,
+            onClick = onClickAdjust,
             backgroundColor = Color.Yellow,
             textColor = Color.Black,
         )
@@ -1031,6 +1039,7 @@ private fun SalesScreenPreview() {
             onClickPlusForSelectedGoods = {},
             onClickDeleteForSelectedGoods = {},
             onClickGoodsFromList = {},
+            onClickAdjust = {}
         )
 
     }

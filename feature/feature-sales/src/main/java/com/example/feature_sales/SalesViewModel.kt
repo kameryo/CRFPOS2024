@@ -1,14 +1,18 @@
 package com.example.feature_sales
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.data.repository.GoodsRepository
+import com.example.data.repository.RecordRepository
 import com.example.model.Calculator
 import com.example.model.CartItem
 import com.example.model.Goods
+import com.example.model.Record
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class SalesScreenState(
@@ -27,6 +31,7 @@ data class SalesScreenState(
 @HiltViewModel
 class SalesViewModel @Inject constructor(
     private val goodsRepository: GoodsRepository,
+    private val recordRepository: RecordRepository,
 ) : ViewModel() {
     sealed interface UiState {
         data object Initial : UiState
@@ -156,6 +161,27 @@ class SalesViewModel @Inject constructor(
             selectedGoods = _salesScreenState.value.selectedGoods - cartItem
         )
         calculate()
+    }
+
+    fun saveRecord() {
+        val record = Record(
+            id = 0,
+            time = System.currentTimeMillis(),
+            total = _salesScreenState.value.total,
+            fareSales = _salesScreenState.value.subFare,
+            goodsSales = _salesScreenState.value.subGoods,
+            adult = _salesScreenState.value.adultCount,
+            child = _salesScreenState.value.childCount,
+            goodsList = _salesScreenState.value.selectedGoods,
+            memo = ""
+        )
+        viewModelScope.launch {
+            try {
+                recordRepository.add(record)
+            } catch (e: Exception) {
+                _uiState.value = UiState.Resetting
+            }
+        }
     }
 
 }
