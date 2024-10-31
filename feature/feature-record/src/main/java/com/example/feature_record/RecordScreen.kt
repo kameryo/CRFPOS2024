@@ -1,8 +1,10 @@
 package com.example.feature_record
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -69,8 +71,23 @@ private fun RecordScreen(
             )
         }
     ) { paddingValues ->
+        RecordListContent(
+            modifier = Modifier.padding(paddingValues),
+            recordList = recordList,
+            toEdit = toEdit
+        )
+    }
+}
+
+@Composable
+fun RecordListContent(
+    modifier: Modifier = Modifier,
+    recordList: List<Record>,
+    toEdit: (Long) -> Unit,
+) {
+    Column {
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = modifier.fillMaxWidth()
         ) {
             Text(
                 text = stringResource(id = R.string.date_time),
@@ -85,15 +102,31 @@ private fun RecordScreen(
             )
 
             Text(
+                text = stringResource(id = R.string.goods_income),
+                fontSize = 25.sp,
+                modifier = Modifier.width(200.dp)
+            )
+
+            Text(
+                text = stringResource(id = R.string.fare_income),
+                fontSize = 25.sp,
+                modifier = Modifier.width(200.dp)
+            )
+
+            Text(
                 text = stringResource(id = R.string.adult),
                 fontSize = 25.sp,
                 modifier = Modifier.width(200.dp)
             )
 
+            Text(
+                text = stringResource(id = R.string.child),
+                fontSize = 25.sp,
+                modifier = Modifier.width(200.dp)
+            )
         }
-        LazyColumn(
-            contentPadding = paddingValues,
-        ) {
+
+        LazyColumn {
             items(
                 count = recordList.size,
                 key = { index -> recordList[index].id },
@@ -108,7 +141,9 @@ private fun RecordScreen(
                 }
             )
         }
+
     }
+
 }
 
 @Composable
@@ -134,10 +169,30 @@ private fun RecordListItem(
                 )
 
                 Text(
+                    text = stringResource(id = R.string.yen, record.goodsSales),
+                    fontSize = 25.sp,
+                    modifier = Modifier.width(200.dp)
+                )
+
+                Text(
+                    text = stringResource(id = R.string.yen, record.fareSales),
+                    fontSize = 25.sp,
+                    modifier = Modifier.width(200.dp)
+                )
+
+                Text(
                     text = record.adult.toString(),
                     fontSize = 25.sp,
                     modifier = Modifier.width(200.dp)
                 )
+
+                Text(
+                    text = record.child.toString(),
+                    fontSize = 25.sp,
+                    modifier = Modifier.width(200.dp)
+                )
+
+
 
             }
         },

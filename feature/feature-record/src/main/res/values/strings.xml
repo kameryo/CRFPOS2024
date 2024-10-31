@@ -9,4 +9,12 @@
     <string name="adult">大人</string>
     <string name="delete">削除</string>
     <string name="delete_message">本当に削除しますか</string>
+    <string name="goods_income">物販</string>
+    <string name="fare_income">運賃</string>
+    <string name="child">子供</string>
+    <string name="date">日付</string>
+    <string name="soukei">総計</string>
+    <string name="person">乗車人員</string>
+    <string name="count">件数</string>
+    <string name="ken">%s件</string>
 </resources>
