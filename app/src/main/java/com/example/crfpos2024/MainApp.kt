@@ -13,6 +13,8 @@ import com.example.feature_goods.EditGoodsScreen
 import com.example.feature_goods.EditGoodsViewModel
 import com.example.feature_goods.GoodsListViewModel
 import com.example.feature_goods.GoodsScreen
+import com.example.feature_record.EditRecordScreen
+import com.example.feature_record.EditRecordViewModel
 import com.example.feature_record.RecordScreen
 import com.example.feature_record.RecordViewModel
 import com.example.feature_sales.SalesScreen
@@ -57,6 +59,22 @@ fun MainApp() {
                 toEdit = { id ->
                     navController.navigate("/record/$id")
                 },
+            )
+        }
+
+        composable("/record/{recordId}",
+            arguments = listOf(
+                navArgument("recordId") {
+                    type = NavType.LongType
+                }
+            )
+        ) {
+            val viewModel: EditRecordViewModel = hiltViewModel()
+            EditRecordScreen(
+                back = {
+                    navController.popBackStack()
+                },
+                viewModel = viewModel,
             )
         }
 

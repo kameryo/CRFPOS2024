@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="record_manage">売上管理</string>
+    <string name="edit_goods">売上編集</string>
 </resources>
