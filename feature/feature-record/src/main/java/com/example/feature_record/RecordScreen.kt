@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -56,7 +56,7 @@ private fun RecordScreen(
                 },
                 actions = {
                     IconButton(onClick = toSummarizeRecord) {
-                        Icon(Icons.Default.Add, contentDescription = "Add")
+                        Icon(Icons.AutoMirrored.Filled.List, contentDescription = "Add")
                     }
                 }
             )
