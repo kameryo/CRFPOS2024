@@ -35,6 +35,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.Typography
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -55,6 +57,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+//import com.example.crfpos2024.ui.theme.CRFPOS2024Theme
 import com.example.model.CartItem
 import com.example.model.Goods
 
@@ -887,131 +890,71 @@ private fun SquareButton(
     }
 }
 
+@Composable
+fun CRFPOS2024ThemePreview(content: @Composable () -> Unit) {
+    MaterialTheme(
+        colorScheme = lightColorScheme(background = Color(0xFFCCCCBC)),
+        typography = Typography(),
+    ) {
+        content()
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview(
     device = "spec:width=1920px,height=1200px,dpi=230",
     showBackground = true,
     showSystemUi = true,
-    backgroundColor = 0xFFCCCCCC
+//    backgroundColor = 0xFFCCCCCC
 )
 private fun SalesScreenPreview() {
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.crfpos)) },
-                navigationIcon = {
-                    IconButton(onClick = { }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+    CRFPOS2024ThemePreview {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(stringResource(R.string.crfpos)) },
+                    navigationIcon = {
+                        IconButton(onClick = { }) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = { }) {
+                            Icon(Icons.Filled.Refresh, contentDescription = "Home")
+                        }
                     }
-                },
-                actions = {
-                    IconButton(onClick = { }) {
-                        Icon(Icons.Filled.Refresh, contentDescription = "Home")
-                    }
-                }
-            )
-        },
-    ) { paddingValues ->
-        SalesScreenContent(
-            modifier = Modifier.padding(paddingValues),
-            adultCount = 1,
-            childCount = 2,
-            adultManualCountText = "3",
-            childManualCountText = "3",
-            onChangeAdultCount = {},
-            onChangeChildCount = {},
-            onChangeAdultManualCountText = {},
-            onChangeChildManualCountText = {},
-            subFare = 1,
-            subGoods = 0,
-            total = 1,
-            isDrivingTicketInSelectedGoods = true,
-            normalTicketCount = 1,
-            accompanyTicketCount = 1,
-            drivingTicketCount = 3,
-            goodsList = listOf(
-                Goods(
-                    id = 1,
-                    name = "商品1",
-                    price = 100,
-                    purchases = 0,
-                    remain = 0,
-                    isAvailable = true,
-                    displayOrder = 1,
-                ),
-                Goods(
-                    id = 2,
-                    name = "商品2",
-                    price = 200,
-                    purchases = 0,
-                    remain = 0,
-                    isAvailable = true,
-                    displayOrder = 1,
-                ),
-                Goods(
-                    id = 3,
-                    name = "商品3",
-                    price = 300,
-                    purchases = 0,
-                    remain = 0,
-                    isAvailable = true,
-                    displayOrder = 1,
-                ),
-                Goods(
-                    id = 4,
-                    name = "商品4",
-                    price = 400,
-                    purchases = 0,
-                    remain = 0,
-                    isAvailable = true,
-                    displayOrder = 1,
-                ),
-                Goods(
-                    id = 5,
-                    name = "商品5",
-                    price = 500,
-                    purchases = 0,
-                    remain = 0,
-                    isAvailable = true,
-                    displayOrder = 1,
-                ),
-                Goods(
-                    id = 6,
-                    name = "商品6",
-                    price = 600,
-                    purchases = 0,
-                    remain = 0,
-                    isAvailable = true,
-                    displayOrder = 1,
-                ),
-                Goods(
-                    id = 7,
-                    name = "商品7",
-                    price = 700,
-                    purchases = 0,
-                    remain = 0,
-                    isAvailable = true,
-                    displayOrder = 1,
-                ),
-
-                ),
-            selectedGoods = listOf(
-                CartItem(
-                    goods = Goods(
+                )
+            },
+        ) { paddingValues ->
+            SalesScreenContent(
+                modifier = Modifier.padding(paddingValues),
+                adultCount = 1,
+                childCount = 2,
+                adultManualCountText = "3",
+                childManualCountText = "3",
+                onChangeAdultCount = {},
+                onChangeChildCount = {},
+                onChangeAdultManualCountText = {},
+                onChangeChildManualCountText = {},
+                subFare = 1,
+                subGoods = 0,
+                total = 1,
+                isDrivingTicketInSelectedGoods = true,
+                normalTicketCount = 1,
+                accompanyTicketCount = 1,
+                drivingTicketCount = 3,
+                goodsList = listOf(
+                    Goods(
                         id = 1,
-                        name = "商品商品1",
+                        name = "商品1",
                         price = 100,
                         purchases = 0,
                         remain = 0,
                         isAvailable = true,
                         displayOrder = 1,
                     ),
-                    quantity = 1,
-                ),
-                CartItem(
-                    goods = Goods(
+                    Goods(
                         id = 2,
                         name = "商品2",
                         price = 200,
@@ -1020,10 +963,7 @@ private fun SalesScreenPreview() {
                         isAvailable = true,
                         displayOrder = 1,
                     ),
-                    quantity = 2,
-                ),
-                CartItem(
-                    goods = Goods(
+                    Goods(
                         id = 3,
                         name = "商品3",
                         price = 300,
@@ -1032,16 +972,93 @@ private fun SalesScreenPreview() {
                         isAvailable = true,
                         displayOrder = 1,
                     ),
-                    quantity = 3,
+                    Goods(
+                        id = 4,
+                        name = "商品4",
+                        price = 400,
+                        purchases = 0,
+                        remain = 0,
+                        isAvailable = true,
+                        displayOrder = 1,
+                    ),
+                    Goods(
+                        id = 5,
+                        name = "商品5",
+                        price = 500,
+                        purchases = 0,
+                        remain = 0,
+                        isAvailable = true,
+                        displayOrder = 1,
+                    ),
+                    Goods(
+                        id = 6,
+                        name = "商品6",
+                        price = 600,
+                        purchases = 0,
+                        remain = 0,
+                        isAvailable = true,
+                        displayOrder = 1,
+                    ),
+                    Goods(
+                        id = 7,
+                        name = "商品7",
+                        price = 700,
+                        purchases = 0,
+                        remain = 0,
+                        isAvailable = true,
+                        displayOrder = 1,
+                    ),
+
+                    ),
+                selectedGoods = listOf(
+                    CartItem(
+                        goods = Goods(
+                            id = 1,
+                            name = "商品商品1",
+                            price = 100,
+                            purchases = 0,
+                            remain = 0,
+                            isAvailable = true,
+                            displayOrder = 1,
+                        ),
+                        quantity = 1,
+                    ),
+                    CartItem(
+                        goods = Goods(
+                            id = 2,
+                            name = "商品2",
+                            price = 200,
+                            purchases = 0,
+                            remain = 0,
+                            isAvailable = true,
+                            displayOrder = 1,
+                        ),
+                        quantity = 2,
+                    ),
+                    CartItem(
+                        goods = Goods(
+                            id = 3,
+                            name = "商品3",
+                            price = 300,
+                            purchases = 0,
+                            remain = 0,
+                            isAvailable = true,
+                            displayOrder = 1,
+                        ),
+                        quantity = 3,
+                    ),
                 ),
-            ),
-            onClickMinusForSelectedGoods = { },
-            onClickPlusForSelectedGoods = {},
-            onClickDeleteForSelectedGoods = {},
-            onClickGoodsFromList = {},
-            onClickAdjust = {}
-        )
+                onClickMinusForSelectedGoods = { },
+                onClickPlusForSelectedGoods = {},
+                onClickDeleteForSelectedGoods = {},
+                onClickGoodsFromList = {},
+                onClickAdjust = {}
+            )
+
+        }
 
     }
+
+
 }
 
