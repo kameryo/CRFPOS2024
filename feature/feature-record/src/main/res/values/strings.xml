@@ -3,4 +3,10 @@
     <string name="record_manage">売上管理</string>
     <string name="edit_goods">売上編集</string>
     <string name="diary_summary">日別合計</string>
+    <string name="yen">%s円</string>
+    <string name="date_time">日時</string>
+    <string name="total">合計</string>
+    <string name="adult">大人</string>
+    <string name="delete">削除</string>
+    <string name="delete_message">本当に削除しますか</string>
 </resources>

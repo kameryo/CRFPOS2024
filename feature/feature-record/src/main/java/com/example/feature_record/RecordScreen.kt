@@ -2,6 +2,8 @@ package com.example.feature_record
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -18,7 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.model.Record
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun RecordScreen(
@@ -62,6 +69,28 @@ private fun RecordScreen(
             )
         }
     ) { paddingValues ->
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = stringResource(id = R.string.date_time),
+                fontSize = 25.sp,
+                modifier = Modifier.width(350.dp)
+            )
+
+            Text(
+                text = stringResource(id = R.string.total),
+                fontSize = 25.sp,
+                modifier = Modifier.width(200.dp)
+            )
+
+            Text(
+                text = stringResource(id = R.string.adult),
+                fontSize = 25.sp,
+                modifier = Modifier.width(200.dp)
+            )
+
+        }
         LazyColumn(
             contentPadding = paddingValues,
         ) {
@@ -89,9 +118,27 @@ private fun RecordListItem(
 ) {
     ListItem(
         headlineContent = {
-            Row {
-                Text(record.time.toString())
-                Text(record.total.toString())
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = convertUnixTimeToDateTime(record.time / 1000),
+                    fontSize = 25.sp,
+                    modifier = Modifier.width(350.dp)
+                )
+
+                Text(
+                    text = stringResource(id = R.string.yen, record.total),
+                    fontSize = 25.sp,
+                    modifier = Modifier.width(200.dp)
+                )
+
+                Text(
+                    text = record.adult.toString(),
+                    fontSize = 25.sp,
+                    modifier = Modifier.width(200.dp)
+                )
+
             }
         },
 
@@ -100,4 +147,10 @@ private fun RecordListItem(
         }
     )
     HorizontalDivider()
+}
+
+private fun convertUnixTimeToDateTime(unixTime: Long): String {
+    val date = Date(unixTime * 1000)
+    val formatter = SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.getDefault())
+    return formatter.format(date)
 }
