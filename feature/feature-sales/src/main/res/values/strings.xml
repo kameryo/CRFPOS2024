@@ -13,4 +13,5 @@
     <string name="adjust">清算</string>
     <string name="buppan">物販</string>
     <string name="input">入力</string>
+    <string name="set_price_item">%sつで%s円</string>
 </resources>

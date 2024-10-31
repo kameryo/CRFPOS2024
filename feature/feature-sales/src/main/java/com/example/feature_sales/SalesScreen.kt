@@ -61,7 +61,9 @@ import androidx.compose.ui.unit.sp
 import com.example.model.CartItem
 import com.example.model.Goods
 
-private const val MAX_PRICE_DIGITS = 5
+private const val MAX_NAME_DIGITS = 5
+private const val MAX_PRICE_SELECT_ITEM_DIGITS = 4
+private const val MAX_PRICE_SUB_DIGITS = 6
 private const val MAX_TICKET_DIGITS = 4
 
 
@@ -423,6 +425,10 @@ private fun ShowCartItems(
                     productName = selectedGoods[index].goods.name,
                     numOfOrder = selectedGoods[index].quantity,
                     unitPrice = selectedGoods[index].goods.price,
+                    isAvailable = selectedGoods[index].goods.isAvailable,
+                    isPartOfSet = selectedGoods[index].goods.isPartOfSet,
+                    setPrice = selectedGoods[index].goods.setPrice,
+                    setRequiredQuantity = selectedGoods[index].goods.setRequiredQuantity,
                     onClickMinus = { onClickMinusForSelectedGoods(selectedGoods[index]) },
                     onClickPlus = { onClickPlusForSelectedGoods(selectedGoods[index]) },
                     onClickDelete = { onClickDeleteForSelectedGoods(selectedGoods[index]) },
@@ -451,16 +457,16 @@ private fun ShowSummary(
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text(
                     text = stringResource(R.string.fare),
-                    fontSize = 25.sp,
+                    fontSize = 30.sp,
                 )
                 Text(
                     text = stringResource(id = R.string.yen, subFare.toString()),
-                    fontSize = 25.sp,
+                    fontSize = 30.sp,
                     modifier = Modifier
                         .width(
                             // MAX_PRICE_DIGITS分のwidthを確保する
                             with(LocalDensity.current) {
-                                MaterialTheme.typography.titleLarge.fontSize.toDp() * MAX_PRICE_DIGITS
+                                MaterialTheme.typography.titleLarge.fontSize.toDp() * MAX_PRICE_SUB_DIGITS
                             }
                         ),
                     textAlign = TextAlign.End
@@ -470,16 +476,16 @@ private fun ShowSummary(
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text(
                     text = stringResource(id = R.string.buppan),
-                    fontSize = 25.sp,
+                    fontSize = 30.sp,
                 )
                 Text(
                     text = stringResource(id = R.string.yen, subGoods),
-                    fontSize = 25.sp,
+                    fontSize = 30.sp,
                     modifier = Modifier
                         .width(
                             // MAX_PRICE_DIGITS分のwidthを確保する
                             with(LocalDensity.current) {
-                                MaterialTheme.typography.titleLarge.fontSize.toDp() * MAX_PRICE_DIGITS
+                                MaterialTheme.typography.titleLarge.fontSize.toDp() * MAX_PRICE_SUB_DIGITS
                             }
                         ),
                     textAlign = TextAlign.End
@@ -489,16 +495,16 @@ private fun ShowSummary(
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
                     text = stringResource(id = R.string.sum),
-                    fontSize = 30.sp,
+                    fontSize = 35.sp,
                 )
                 Text(
                     text = stringResource(id = R.string.yen, total),
-                    fontSize = 30.sp,
+                    fontSize = 35.sp,
                     modifier = Modifier
                         .width(
                             // MAX_PRICE_DIGITS分のwidthを確保する
                             with(LocalDensity.current) {
-                                MaterialTheme.typography.titleLarge.fontSize.toDp() * MAX_PRICE_DIGITS
+                                MaterialTheme.typography.titleLarge.fontSize.toDp() * MAX_PRICE_SUB_DIGITS
                             }
                         ),
                     textAlign = TextAlign.End
@@ -693,7 +699,13 @@ private fun ShowGoodsList(
                 GoodsListItem(
                     name = goodsList[index].name,
                     price = goodsList[index].price,
+                    isAvailable = goodsList[index].isAvailable,
+                    isPartOfSet = goodsList[index].isPartOfSet,
+                    setPrice = goodsList[index].setPrice,
+                    setRequiredQuantity = goodsList[index].setRequiredQuantity,
+
                     onClick = { onClickGoodsFromList(goodsList[index]) },
+                    modifier = Modifier
                 )
             }
         )
@@ -704,14 +716,23 @@ private fun ShowGoodsList(
 fun GoodsListItem(
     name: String,
     price: Int,
+    isAvailable: Boolean,
+    isPartOfSet: Boolean,
+    setPrice: Int?,
+    setRequiredQuantity: Int?,
+
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
     Column(
         modifier = modifier
             .padding(5.dp)
-            .clickable(onClick = onClick)
-            .background(Color.White)
+            .clickable(onClick = {
+                if (isAvailable) {
+                    onClick()
+                }
+            })
+            .background(if (isAvailable) Color.White else Color.Gray)
             .padding(16.dp),
     ) {
         Text(
@@ -719,7 +740,16 @@ fun GoodsListItem(
             style = MaterialTheme.typography.bodyLarge,
         )
         Text(
-            text = price.toString(),
+            text =
+            if (isPartOfSet) {
+                stringResource(
+                    id = R.string.set_price_item,
+                    setRequiredQuantity.toString(),
+                    setPrice.toString(),
+                )
+            } else {
+                stringResource(id = R.string.yen, price)
+            },
             style = MaterialTheme.typography.bodyMedium,
         )
     }
@@ -732,6 +762,10 @@ private fun RequestingProductItemView(
     productName: String,
     numOfOrder: Int,
     unitPrice: Int,
+    isAvailable: Boolean,
+    isPartOfSet: Boolean,
+    setPrice: Int?,
+    setRequiredQuantity: Int?,
     onClickMinus: () -> Unit,
     onClickPlus: () -> Unit,
     onClickDelete: () -> Unit,
@@ -746,6 +780,12 @@ private fun RequestingProductItemView(
         Text(
             text = productName,
             style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.width(
+                // MAX_PRICE_DIGITS分のwidthを確保する
+                with(LocalDensity.current) {
+                    MaterialTheme.typography.titleLarge.fontSize.toDp() * MAX_NAME_DIGITS
+                }
+            )
         )
         Spacer(modifier = Modifier.weight(1f))
         Row(
@@ -762,26 +802,50 @@ private fun RequestingProductItemView(
                     text = numOfOrder.toString(),
                     style = MaterialTheme.typography.titleLarge,
                     textAlign = TextAlign.Center,
+                    modifier = Modifier.width(
+                        // MAX_PRICE_DIGITS分のwidthを確保する
+                        with(LocalDensity.current) {
+                            MaterialTheme.typography.titleLarge.fontSize.toDp() * 2
+                        }
+                    )
                 )
                 FilledTonalIconButton(onClick = onClickPlus) {
                     Icon(imageVector = Icons.Default.KeyboardArrowUp, contentDescription = null)
                 }
             }
             Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(
-                    text = stringResource(id = R.string.yen, unitPrice),
-                    style = MaterialTheme.typography.titleLarge,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.width(
-                        // MAX_PRICE_DIGITS分のwidthを確保する
-                        with(LocalDensity.current) {
-                            MaterialTheme.typography.titleLarge.fontSize.toDp() * MAX_PRICE_DIGITS
-                        }
+                if (isPartOfSet) {
+                    Text(
+                        text = stringResource(
+                            id = R.string.set_price_item,
+                            setRequiredQuantity.toString(),
+                            setPrice.toString(),
+                        ),
+                        style = MaterialTheme.typography.titleSmall,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.width(
+                            // MAX_PRICE_DIGITS分のwidthを確保する
+                            with(LocalDensity.current) {
+                                MaterialTheme.typography.titleLarge.fontSize.toDp() * MAX_PRICE_SELECT_ITEM_DIGITS
+                            }
+                        )
                     )
-                )
+                } else {
+                    Text(
+                        text = stringResource(id = R.string.yen, numOfOrder * unitPrice),
+                        style = MaterialTheme.typography.titleLarge,
+                        textAlign = TextAlign.End,
+                        modifier = Modifier.width(
+                            // MAX_PRICE_DIGITS分のwidthを確保する
+                            with(LocalDensity.current) {
+                                MaterialTheme.typography.titleLarge.fontSize.toDp() * MAX_PRICE_SELECT_ITEM_DIGITS
+                            }
+                        )
+                    )
+                }
                 FilledTonalIconButton(onClick = onClickDelete) {
                     Icon(imageVector = Icons.Default.Delete, contentDescription = null)
                 }

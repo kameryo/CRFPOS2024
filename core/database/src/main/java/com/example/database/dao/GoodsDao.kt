@@ -13,7 +13,7 @@ interface GoodsDao {
     @Insert
     suspend fun add(goods: GoodsEntity): Long
 
-    @Query("SELECT * FROM goods order by displayOrder desc")
+    @Query("SELECT * FROM goods order by displayOrder asc")
     fun getAll(): Flow<List<GoodsEntity>>
 
     @Query("SELECT * FROM goods WHERE id = :id LIMIT 1")

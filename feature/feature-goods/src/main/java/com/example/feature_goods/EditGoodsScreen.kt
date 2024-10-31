@@ -121,7 +121,7 @@ private fun EditGoodsScreen(
                                         price = price.toInt(),
                                         purchases = 1,
                                         remain = 1,
-                                        isAvailable = true,
+                                        isAvailable = isAvailable,
                                         displayOrder = if (displayOrder.isNotEmpty()) displayOrder.toInt() else 1,
                                         isPartOfSet = isPartOfSet,
                                         setId = if (isPartOfSet) setId.toLong() else null,
