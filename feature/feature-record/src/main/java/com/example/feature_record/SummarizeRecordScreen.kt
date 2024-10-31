@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -18,61 +17,52 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.example.model.Record
+import com.example.database.dao.RecordDao
 
 @Composable
-fun RecordScreen(
+fun SummarizeRecordScreen(
     back: () -> Unit,
-    viewModel: RecordViewModel,
-    toEdit: (Long) -> Unit,
-    toSummarizeRecord: () -> Unit
+    viewModel: SummarizeRecordViewModel,
 ) {
     val items = viewModel.items.collectAsState(initial = emptyList())
-    RecordScreen(
-        recordList = items.value,
+    SummarizeRecordScreen(
         back = back,
-        toEdit = toEdit,
-        toSummarizeRecord = toSummarizeRecord,
+        recordDateList = items.value,
+        toExportCSV = {},
     )
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun RecordScreen(
-    recordList: List<Record>,
+private fun SummarizeRecordScreen(
     back: () -> Unit,
-    toEdit: (Long) -> Unit,
-    toSummarizeRecord: () -> Unit,
+    recordDateList: List<RecordDao.Summary>,
+    toExportCSV: (String) -> Unit,
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.record_manage)) },
+                title = { Text(stringResource(R.string.diary_summary)) },
                 navigationIcon = {
                     IconButton(onClick = back) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
-                actions = {
-                    IconButton(onClick = toSummarizeRecord) {
-                        Icon(Icons.Default.Add, contentDescription = "Add")
-                    }
-                }
-            )
-        }
+
+                )
+        },
     ) { paddingValues ->
         LazyColumn(
             contentPadding = paddingValues,
         ) {
             items(
-                count = recordList.size,
-                key = { index -> recordList[index].id },
+                count = recordDateList.size,
+                key = { index -> recordDateList[index].date },
                 itemContent = {
-                    RecordListItem(
-                        record = recordList[it],
+                    SummaryRecordItem(
+                        recordSummary = recordDateList[it],
                         onClick = {
-                            toEdit(recordList[it].id)
+                            toExportCSV(recordDateList[it].date)
                         }
 
                     )
@@ -83,15 +73,15 @@ private fun RecordScreen(
 }
 
 @Composable
-private fun RecordListItem(
-    record: Record,
+fun SummaryRecordItem(
+    recordSummary: RecordDao.Summary,
     onClick: () -> Unit,
 ) {
     ListItem(
         headlineContent = {
             Row {
-                Text(record.time.toString())
-                Text(record.total.toString())
+                Text(recordSummary.date)
+                Text(recordSummary.totalSum.toString())
             }
         },
 

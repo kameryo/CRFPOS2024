@@ -2,4 +2,5 @@
 <resources>
     <string name="record_manage">売上管理</string>
     <string name="edit_goods">売上編集</string>
+    <string name="diary_summary">日別合計</string>
 </resources>
