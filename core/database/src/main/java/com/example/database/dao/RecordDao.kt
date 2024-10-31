@@ -34,7 +34,7 @@ interface RecordDao {
     fun getSummary(): Flow<List<Summary>>
 
 
-    @Query("SELECT * FROM Record WHERE DATE(DATETIME(time, 'unixepoch')) = :date ORDER BY id desc")
+    @Query("SELECT * FROM Record WHERE DATE(DATETIME(time / 1000, 'unixepoch')) = :date ORDER BY id desc")
     suspend fun getDiaryData(date: String): List<Record>
 
 
